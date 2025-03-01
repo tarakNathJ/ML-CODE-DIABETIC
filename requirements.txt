@@ -1,0 +1,7 @@
+Flask
+pandas
+numpy
+scikit-learn==1.5.2
+xgboost
+python-dotenv
+flask-cors

@@ -4,7 +4,10 @@ import numpy as np
 import pandas as pd
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+
+
 from dotenv import load_dotenv
+
 
 
 load_dotenv()
@@ -14,6 +17,7 @@ def create_app():
     CORS(app)
     load_models(app)
     register_routes(app)
+    helth_check(app)
     return app
 
 
@@ -65,7 +69,20 @@ def register_routes(app):
             return jsonify({'success': True, 'predictions': predictions})
         except Exception as e:
             return jsonify({'error': str(e)}), 500
+        
 
+def helth_check(app):
+    @app.route('/helth', methods=['GET'])
+    def helth():
+        try:
+            return jsonify({'status': 'ok'})
+        except Exception as e:
+            return jsonify({'status': "server chowked"}), 400
+
+        
+        
+
+    
 
 if __name__ == '__main__':
     app = create_app()

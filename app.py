@@ -1,14 +1,12 @@
+
+
 import os
 import pickle
 import numpy as np
 import pandas as pd
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-
-
 from dotenv import load_dotenv
-
-
 
 load_dotenv()
 
@@ -17,15 +15,13 @@ def create_app():
     CORS(app)
     load_models(app)
     register_routes(app)
-    helth_check(app)
+    health_check(app)
     return app
-
 
 def load_model(model_path, model_type='pickle'):
     """Load a model based on its type."""
     with open(model_path, 'rb') as f:
         return pickle.load(f)
-
 
 def load_models(app):
     """Load all models and attach them to the app config."""
@@ -38,7 +34,6 @@ def load_models(app):
         'random_forest': load_model(model_paths['random_forest']),
         'xgboost': load_model(model_paths['xgboost']),
     }
-
 
 def register_routes(app):
     """Register all API endpoints."""
@@ -69,22 +64,17 @@ def register_routes(app):
             return jsonify({'success': True, 'predictions': predictions})
         except Exception as e:
             return jsonify({'error': str(e)}), 500
-        
 
-def helth_check(app):
-    @app.route('/helth', methods=['GET'])
-    def helth():
+def health_check(app):
+    @app.route('/health', methods=['GET'])
+    def health():
         try:
             return jsonify({'status': 'ok'})
         except Exception as e:
-            return jsonify({'status': "server chowked"}), 400
+            return jsonify({'status': "server choked"}), 500
 
-        
-        
-
-    
+app = create_app() #create app object.
 
 if __name__ == '__main__':
-    app = create_app()
-    port = int(os.getenv('PORT', os.getenv('PORT')))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    port = int(os.getenv('PORT', 4000)) #default to 4000 if PORT is not set.
+    app.run(host='0.0.0.0', port=port, debug=True) #remove debug=True for production
